@@ -19,6 +19,7 @@ darknet
 .fuse*
 
 jupyter-notebooks/train-output/*
+.vscode/
 
 # OS Generated #
 .DS_Store*
