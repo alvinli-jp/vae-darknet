@@ -15,9 +15,11 @@ opencv/
 convnet/
 decaf/
 submission/
-cfg/
 darknet
 .fuse*
+
+jupyter-notebooks/train-output/*
+.vscode/
 
 # OS Generated #
 .DS_Store*
