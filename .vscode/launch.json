@@ -1,0 +1,106 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "vae",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/darknet",
+            "args": [
+                "vae",
+                "train",
+                "vae_connected.cfg",
+                "mnist_train_vae.csv",
+                "-N",
+                "4000"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "autoencoder",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/darknet",
+            "args": [
+                "autoencoder",
+                "autoencoder.cfg",
+                "mnist_train.csv",
+                "1000"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "cifar",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/darknet",
+            "args": [
+                "classifier",
+                "train",
+                "cfg/cifar.data",
+                "cfg/cifar.cfg"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "test-conv",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/darknet",
+            "args": [
+                "classifier",
+                "train",
+                "iwas",
+                "test-conv.cfg"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ]
+}
