@@ -41,7 +41,6 @@ void train_classifier(char *datacfg, char *cfgfile, char *weightfile, int *gpus,
     int imgs = net->batch * net->subdivisions * ngpus;
 
     printf("Learning Rate: %g, Momentum: %g, Decay: %g\n", net->learning_rate, net->momentum, net->decay);
-    // lando outcommented next lines
     list *options = read_data_cfg(datacfg);
 
     char *backup_directory = option_find_str(options, "backup", "/backup/");
@@ -60,7 +59,6 @@ void train_classifier(char *datacfg, char *cfgfile, char *weightfile, int *gpus,
     char **paths = (char **)list_to_array(plist);
     printf("%d\n", plist->size);
     int N = plist->size;
-    // lando outcommented until here
     double time;
 
     load_args args = {0};
@@ -79,7 +77,6 @@ void train_classifier(char *datacfg, char *cfgfile, char *weightfile, int *gpus,
     args.hue = net->hue;
     args.size = net->w;
 
-    //lando outcommented next lines
     args.paths = paths;
     args.classes = classes;
     args.n = imgs;
@@ -96,27 +93,10 @@ void train_classifier(char *datacfg, char *cfgfile, char *weightfile, int *gpus,
     pthread_t load_thread;
     args.d = &buffer;
     load_thread = load_data(args);
-    // lando outcommented until here
-
-    // for csv stuff
-    // data train = load_categorical_data_csv("mnist_train.csv", 0, 10);
-    // int N = 60000;
-
-    // train.X.rows = N;
-    // train.y.rows = N;
-
-    // int xy = 0;
-    // for (xy = 0; xy < 28*28; xy++) {
-    //     // printf("%f ", train.X.vals[0][xy]);
-    //     if (xy % 28 == 0) printf("\n");
-    //     if (train.X.vals[0][xy] != 0) printf("#");
-    //     else printf(".");
-    // }
 
     int count = 0;
     int epoch = (*net->seen)/N;
     while(get_current_batch(net) < net->max_batches || net->max_batches == 0){
-        // lando outcommented next lines!
         if(net->random && count++%40 == 0){
             printf("Resizing\n");
             int dim = (rand() % 11 + 4) * 32;
@@ -147,7 +127,6 @@ void train_classifier(char *datacfg, char *cfgfile, char *weightfile, int *gpus,
         load_thread = load_data(args);
 
         printf("Loaded: %lf seconds\n", what_time_is_it_now()-time);
-        // lando outcommented until here
         time = what_time_is_it_now();
 
         float loss = 0;
@@ -163,7 +142,6 @@ void train_classifier(char *datacfg, char *cfgfile, char *weightfile, int *gpus,
         if(avg_loss == -1) avg_loss = loss;
         avg_loss = avg_loss*.9 + loss*.1;
         printf("%ld, %.3f: %f, %f avg, %f rate, %lf seconds, %ld images\n", get_current_batch(net), (float)(*net->seen)/N, loss, avg_loss, get_current_rate(net), what_time_is_it_now()-time, *net->seen);
-        // lando outcommented next lines
         free_data(train);
         if(*net->seen/N > epoch){
             epoch = *net->seen/N;
@@ -176,89 +154,17 @@ void train_classifier(char *datacfg, char *cfgfile, char *weightfile, int *gpus,
             sprintf(buff, "%s/%s.backup",backup_directory,base);
             save_weights(net, buff);
         }
-        // lando ouotcommented until here
     }
     char buff[256];
     sprintf(buff, "%s/%s.weights", backup_directory, base);
     save_weights(net, buff);
     pthread_join(load_thread, 0);
-    
-    // lando csv stuff for testing next lines
-    // data test = load_categorical_data_csv("mnist_test.csv", 0, 10);
-
-    // float *pred;
-
-    // i = 0;
-    // for (i = 0; i < 10; i++){
-    //     xy = 0;
-    //     for (xy = 0; xy < 28*28; xy++) {
-    //         if (xy % 28 == 0) printf("\n");
-    //         if (test.X.vals[i][xy] != 0) printf("#");
-    //         else printf(".");
-    //     }
-
-    //     pred = network_predict(net, test.X.vals[i]);
-
-    //     printf("\nprediction: \n");
-    //     for (xy = 0; xy < 10; xy++) {
-    //         printf("%.2f ", pred[xy]);
-    //     }
-    // }
-    // free(pred);
-
-
-    // int j;
-    // for (i = 0; i < 10; i++) {
-    //     printf("\n");
-    //     for (j = 0; j < 784; j++) {
-    //         if (j % 28 == 0)
-    //             printf("\n");
-    //         if (test.X.vals[i][j] == 0)
-    //             printf(".");
-    //         else
-    //             printf("#");
-    //     }
-    // }
-
-    // ########### VALIDATE ON TRAIN SET
-    // float sum_train_err = 0;
-    // for (i = 0; i < train.X.rows; i++) {
-    //     float *out = network_predict(net, train.X.vals[i]);
-
-    //     int truth_index = 0;
-    //     while(train.y.vals[i][truth_index] == 0)
-    //         truth_index++;
-
-    //     sum_train_err += 1 - out[truth_index];
-
-    // }
-    // printf("avg_train_err on %d trained instances: %f\n", train.X.rows, sum_train_err/train.X.rows);
-
-    // ########### VALIDATE ON TEST SET
-    // float sum_test_err = 0;
-
-    // // HACK FOR TESTING
-    // test.X.rows = 1000;
-    // test.y.rows = 1000;
-    // for (i = 0; i < test.X.rows; i++) {
-    //     float *out = network_predict(net, test.X.vals[i]);
-
-    //     int truth_index = 0;
-    //     while(test.y.vals[i][truth_index] == 0)
-    //         truth_index++;
-
-    //     sum_test_err += 1 - out[truth_index];
-
-    // }
-    // printf("avg_test_err on %d tested instances: %f\n", test.X.rows, sum_test_err/test.X.rows);
 
     free_network(net);
-    // lando outcommented next lines
     if(labels) free_ptrs((void**)labels, classes);
     free_ptrs((void**)paths, plist->size);
     free_list(plist);
     free(base);
-    // lando until here
 }
 
 void validate_classifier_crop(char *datacfg, char *filename, char *weightfile)
@@ -1188,5 +1094,4 @@ void run_classifier(int argc, char **argv)
     else if(0==strcmp(argv[2], "validcrop")) validate_classifier_crop(data, cfg, weights);
     else if(0==strcmp(argv[2], "validfull")) validate_classifier_full(data, cfg, weights);
 }
-
 

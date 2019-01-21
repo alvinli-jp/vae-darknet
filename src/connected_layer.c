@@ -44,12 +44,14 @@ layer make_connected_layer(int batch, int inputs, int outputs, ACTIVATION activa
 
     //float scale = 1./sqrt(inputs);
 
-    // LANDO OUTCOMMENTED THIS AND USE OWN WEIGHT INITIALIZER BELOW
+    // landoxy outcommented to use xavier init below
+
     // float scale = sqrt(2./inputs);
     // for(i = 0; i < outputs*inputs; ++i){
     //     l.weights[i] = scale*rand_uniform(-1, 1);
     // }
 
+    
     float limit = sqrt(6.0 / (l.inputs + l.outputs));
     for(i = 0; i < outputs*inputs; ++i){
         l.weights[i] = rand_uniform(-limit, limit);
